@@ -1,0 +1,39 @@
+{
+  "name": "jiajia-mcp",
+  "version": "0.1.0",
+  "description": "夹夹 MCP 的本地 stdio 转发：把 stdio 上的 MCP 请求转发到 https://jiajia.fun/mcp",
+  "mcpName": "io.github.Joye-Co/jiajia-mcp",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Joye-Co/jiajia-mcp.git"
+  },
+  "homepage": "https://jiajia.fun",
+  "type": "module",
+  "bin": {
+    "jiajia-mcp": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "test": "tsx --test test/*.test.ts",
+    "validate:server-json": "node scripts/validate-server-json.mjs",
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.3",
+    "@types/node": "^22",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3"
+  }
+}

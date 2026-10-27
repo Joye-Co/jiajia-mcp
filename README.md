@@ -119,7 +119,34 @@ bearer_token_env_var = "JIAJIA_MCP_KEY"
 
 ### 只支持 stdio 的客户端
 
-本仓库会提供一个本地 stdio 转发程序，把 stdio 请求转发到上面的端点。还在开发中，完成后在这里补上用法。
+客户端只能启动本地命令时，用本仓库的 stdio 转发程序。它把 stdio 上的每条消息转发到上面的端点，再把响应写回 stdio。需要 Node.js 20 或更高版本。
+
+**状态：** npm 包还没有发布，下面的 `npx` 命令暂时用不了。
+
+```json
+{
+  "mcpServers": {
+    "jiajia": {
+      "command": "npx",
+      "args": ["-y", "jiajia-mcp"],
+      "env": {
+        "JIAJIA_MCP_KEY": "jj_YOUR_KEY"
+      }
+    }
+  }
+}
+```
+
+不用 key 时，删掉 `env` 这一项。
+
+| 环境变量 | 说明 |
+| --- | --- |
+| `JIAJIA_MCP_KEY` | 可选。设置后每个请求都带 `Authorization: Bearer <key>`；不设置按匿名访问 |
+| `JIAJIA_MCP_URL` | 可选。默认 `https://jiajia.fun/mcp`，一般不用改。带 key 时只接受 https 地址 |
+
+- 转发程序只转发消息，不改写内容，也不在新旧两代 MCP 协议之间转换。客户端用的协议版本，服务端得支持。
+- 服务端返回 HTTP 错误（比如 key 无效时的 401）时，转发程序把它变成一条 JSON-RPC 错误交给客户端，同时在 stderr 打一行说明。
+- 日志和错误信息里不会出现 key。
 
 ## 使用建议
 
