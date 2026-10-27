@@ -1,0 +1,45 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Joye-Co/jiajia-mcp",
+  "title": "夹夹",
+  "description": "只读检索和阅读夹夹（jiajia.fun）公开的群聊问答、答案、面经和日报周报",
+  "repository": {
+    "url": "https://github.com/Joye-Co/jiajia-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://jiajia.fun",
+  "version": "0.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://jiajia.fun/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "可选。格式为 Bearer <key>，key 在 jiajia.fun 登录后生成；不填则按匿名访问",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "jiajia-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "JIAJIA_MCP_KEY",
+          "description": "可选。jiajia.fun 生成的 key；不设置则按匿名访问",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
