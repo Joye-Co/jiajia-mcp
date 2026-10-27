@@ -237,6 +237,20 @@ describe("错误透传", () => {
     assert.match(line.error.message, /结束/);
   });
 
+  test("通知的响应流结束时不报错", async (t) => {
+    const server = await startFakeServer((_request, response) => {
+      response.writeHead(200, { "content-type": "text/event-stream" });
+      response.end(": bye\n\n");
+    });
+    t.after(server.close);
+    const { lines, logs, send } = harness(server.url);
+
+    await send({ jsonrpc: "2.0", method: "notifications/initialized" });
+
+    assert.deepEqual(lines, []);
+    assert.deepEqual(logs, []);
+  });
+
   test("无法解析的行和批量请求在本地就返回错误，不发到服务端", async (t) => {
     const server = await startFakeServer(echo);
     t.after(server.close);

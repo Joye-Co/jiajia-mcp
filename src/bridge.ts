@@ -129,7 +129,8 @@ export function createBridge(options: BridgeOptions): Bridge {
         if (id !== undefined && isObject(body) && body.id === id) answered = true;
         emit(request, body);
       }
-      if (!answered) fail(id, "响应流在返回结果之前结束了");
+      // 通知本来就没有结果，流结束不算出错。
+      if (!answered && id !== undefined) fail(id, "响应流在返回结果之前结束了");
       return;
     }
 
