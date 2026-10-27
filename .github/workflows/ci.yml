@@ -10,7 +10,9 @@ permissions:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    # Where jobs run comes from CI_RUNS_ON (same as qqbot).
+    # Unset falls back to ubuntu-24.04; currently ["self-hosted","qqbot-ci"].
+    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '"ubuntu-24.04"') }}
     strategy:
       matrix:
         node: [20, 22]
