@@ -13,19 +13,31 @@ jobs:
     # Where jobs run comes from CI_RUNS_ON (same as qqbot).
     # Unset falls back to ubuntu-24.04; currently ["self-hosted","qqbot-ci"].
     runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '"ubuntu-24.04"') }}
-    strategy:
-      matrix:
-        node: [20, 22]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # check:compat 要取到上一个 v* tag
+      # 开发和 CI 用 Node 24，直接运行 .ts；用户侧 engines 是 >=20，由最后的冒烟测试守住。
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      - name: Generated schema is up to date
+        run: npm run check:schema
+      - name: docs/mcp.md matches the schema
+        run: npm run check:contract
+      - name: No breaking change since the last release
+        run: npm run check:compat
       - run: npm run build
+      - run: npm run check:pack
       - run: npm run validate:server-json
       - run: npm run check:secrets
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: dist/ runs on Node 20
+        run: npm run smoke:dist

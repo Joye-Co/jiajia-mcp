@@ -8,7 +8,7 @@ const CLI = fileURLToPath(new URL("../src/cli.ts", import.meta.url));
 
 // 起一个真的 cli 进程：往 stdin 写完就关掉，收集 stdout 和 stderr。
 function runCli(env: Record<string, string>, input: string) {
-  const child = spawn(process.execPath, ["--import", "tsx", CLI], {
+  const child = spawn(process.execPath, [CLI], {
     env: { PATH: process.env.PATH ?? "", ...env },
     stdio: ["pipe", "pipe", "pipe"],
   });

@@ -1,7 +1,7 @@
 {
   "name": "jiajia-mcp",
   "version": "0.1.0",
-  "description": "夹夹 MCP 的本地 stdio 转发：把 stdio 上的 MCP 请求转发到 https://jiajia.fun/mcp",
+  "description": "夹夹 MCP 的工具定义和本地 stdio 转发：把 stdio 上的 MCP 请求转发到 https://jiajia.fun/mcp",
   "mcpName": "io.github.Joye-Co/jiajia-mcp",
   "license": "MIT",
   "repository": {
@@ -13,8 +13,16 @@
   "bin": {
     "jiajia-mcp": "dist/cli.js"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./schema/*.json": "./schema/*.json"
+  },
   "files": [
-    "dist"
+    "dist",
+    "schema"
   ],
   "engines": {
     "node": ">=20"
@@ -23,17 +31,22 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
-    "test": "tsx --test test/*.test.ts",
+    "test": "node --test \"test/**/*.test.ts\" \"scripts/**/*.test.ts\"",
+    "schema:build": "node scripts/build-schema.ts",
+    "check:schema": "node scripts/build-schema.ts --check",
+    "check:compat": "node scripts/schema-compat.ts",
+    "check:contract": "node scripts/check-contract.ts",
+    "check:pack": "node scripts/check-pack.ts",
+    "smoke:dist": "node scripts/smoke-dist.mjs",
     "validate:server-json": "node scripts/validate-server-json.mjs",
     "check:secrets": "node scripts/check-secrets.mjs",
     "prepack": "npm run build"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.3",
-    "@types/node": "^22",
+    "@types/node": "^24",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
-    "tsx": "^4.23.15",
     "typescript": "~6.0.3"
   }
 }
