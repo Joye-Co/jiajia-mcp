@@ -13,7 +13,12 @@ const RULES = [
 ];
 
 // 许可证原文里有 Creative Commons 的联系邮箱，不是我们的信息。
-const ALLOWED = [{ file: "LICENSE-CONTENT", rule: "邮箱" }];
+// 安全样例本身就是要被服务端打码的合成邮箱和 QQ 号。
+const ALLOWED = [
+  { file: "LICENSE-CONTENT", rule: "邮箱" },
+  { file: "schema/safety-cases.json", rule: "邮箱" },
+  { file: "schema/safety-cases.json", rule: "QQ 号" },
+];
 
 const files = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" }).split("\0").filter(Boolean);
 const findings = [];

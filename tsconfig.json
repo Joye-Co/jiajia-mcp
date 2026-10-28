@@ -7,11 +7,13 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
+    "resolveJsonModule": true,
     "types": ["node"],
     "outDir": "dist",
     "rootDir": "."
   },
-  "include": ["src", "test"]
+  "include": ["src", "test", "scripts"]
 }

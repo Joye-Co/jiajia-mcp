@@ -1,0 +1,4 @@
+{
+  "$comment": "到期删除的工具登记在这里：tool 是删掉的工具，replacement 是替代者，deprecatedSince 是旧工具说明里写出替代者的那次发版日期（YYYY-MM-DD）。规则见 scripts/schema-compat.ts。",
+  "removals": []
+}
