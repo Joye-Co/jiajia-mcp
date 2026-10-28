@@ -165,3 +165,7 @@ bearer_token_env_var = "JIAJIA_MCP_KEY"
 引用公开内容时，请注明来自夹夹，并附上结果里的 `url`，它链接回原始对话。CC BY-NC 4.0 不允许商业使用。
 
 `my_questions` 返回的个人记录不属于公开内容，不适用 CC BY-NC 4.0。
+
+## 参与
+
+见 [CONTRIBUTING.md](CONTRIBUTING.md)；agent 先读 [AGENTS.md](AGENTS.md)。安全问题按 [SECURITY.md](SECURITY.md) 报告，不要开公开 Issue。

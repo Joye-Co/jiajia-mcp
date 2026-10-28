@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 安全问题
+    url: https://github.com/Joye-Co/jiajia-mcp/blob/main/SECURITY.md
+    about: 过滤被绕过、个人信息或 key 泄露，不要开公开 Issue，按这里的说明报告。
