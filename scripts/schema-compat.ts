@@ -104,6 +104,7 @@ if (import.meta.main) {
   try {
     // 从 HEAD^ 往回找：推送 tag 发版时 HEAD 自己就带着新 tag，和自己比永远通过。
     // 只和正式 tag 比，跳过 v0.1.0-rc.1 这类预发布 tag：预发布期间字段名还会改（docs/mcp.md「版本规则」）。
+    // 带 - 的 tag 都算预发布，所以正式版的 tag 只能是 vX.Y.Z，不能打成 v1.0.0-final 这种。
     tag = execFileSync("git", ["describe", "--tags", "--abbrev=0", "--match", "v*", "--exclude", "v*-*", "HEAD^"], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
