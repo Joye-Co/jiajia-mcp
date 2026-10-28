@@ -4,6 +4,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
+import { fileURLToPath } from "node:url";
 
 const pkg = await import("../dist/index.js");
 assert.ok(pkg.TOOLS.length > 0, "dist/index.js 没有导出工具定义");
@@ -24,7 +25,7 @@ const server = createServer((req, res) => {
 await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
 const url = `http://127.0.0.1:${server.address().port}/mcp`;
 
-const child = spawn(process.execPath, [new URL("../dist/cli.js", import.meta.url).pathname], {
+const child = spawn(process.execPath, [fileURLToPath(new URL("../dist/cli.js", import.meta.url))], {
   env: { PATH: process.env.PATH ?? "", JIAJIA_MCP_URL: url },
   stdio: ["pipe", "pipe", "inherit"],
 });

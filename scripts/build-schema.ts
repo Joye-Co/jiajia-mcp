@@ -19,7 +19,7 @@ for (const [path, value] of Object.entries(outputs)) {
   else fs.writeFileSync(path, text);
 }
 if (stale.length) {
-  console.error(`${stale.join("、")} 和 src/contract 不一致，运行 pnpm schema:build 后提交`);
+  console.error(`${stale.join("、")} 和 src/contract 不一致，运行 npm run schema:build 后提交`);
   process.exit(1);
 }
 console.log(check ? "schema 是最新的" : "schema 已写出");

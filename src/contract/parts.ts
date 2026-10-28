@@ -90,7 +90,8 @@ export function result(success: Record<string, JsonSchema>, required: readonly s
     type: "object",
     oneOf: [
       {
-        properties: { contentNotice: { const: CONTENT_NOTICE }, ...success },
+        // 只约束是非空字符串，不写成 const：提示语改字不该算不兼容变更。固定文案是 CONTENT_NOTICE，由服务端和测试使用。
+        properties: { contentNotice: { type: "string", minLength: 1, description: CONTENT_NOTICE }, ...success },
         required: ["contentNotice", ...required],
         not: { properties: { error: true }, required: ["error"] },
       },

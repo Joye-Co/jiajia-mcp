@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { Ajv2020 } from "ajv/dist/2020.js";
-import { ERROR_CODES, MEMBER_ONLY_TOOLS, PROMPTS, SAFETY_CASES, TOOLS } from "../src/index.ts";
+import { CONTENT_NOTICE, ERROR_CODES, MEMBER_ONLY_TOOLS, PROMPTS, SAFETY_CASES, TOOLS } from "../src/index.ts";
 import fixtures from "./fixtures/results.json" with { type: "json" };
 
 // strict 拦下拼错的关键字和 required 里拼错的字段名；format 只声明语义，校验交给服务端。
@@ -65,6 +65,7 @@ test("每个工具都有一份合成成功返回，且通过自己的 outputSche
   assert.deepEqual(Object.keys(success).sort(), TOOLS.map((t) => t.name).sort());
   for (const [name, { output }] of validators) {
     assert.ok(output(success[name]), `${name}: ${ajv.errorsText(output.errors)}`);
+    assert.equal((success[name] as { contentNotice: unknown }).contentNotice, CONTENT_NOTICE, name);
   }
 });
 
