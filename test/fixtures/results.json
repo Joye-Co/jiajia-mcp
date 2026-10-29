@@ -11,7 +11,6 @@
               "type": "answer",
               "url": "https://jiajia.fun/answers/6f1c2a7e?utm_source=mcp",
               "updatedAt": "2026-10-20T08:00:00Z",
-              "contributors": ["群友 A", "群友 B"],
               "license": "CC BY-NC 4.0",
               "title": "工具调用失败时怎么重试",
               "snippet": "先区分参数错误和暂时不可用……"

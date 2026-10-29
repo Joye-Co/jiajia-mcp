@@ -60,11 +60,21 @@ export function publicObject(
   };
 }
 
-export const SUMMARY = (type: string): JsonSchema =>
-  publicObject(type, { title: str("标题"), snippet: str("摘要，只用来判断读哪条；引用前用对应的 get_* 读全文") }, [
-    "title",
-    "snippet",
-  ]);
+// 摘要不带 contributors：网站只在读单条全文时才给出贡献者，给每条摘要补查一次违反「搜索不逐条补查」
+// （docs/mcp.md「决定：摘要不带 contributors」）。
+export const SUMMARY = (type: string): JsonSchema => {
+  const { contributors: _, ...fields } = PUBLIC_FIELDS;
+  return {
+    type: "object",
+    properties: {
+      ...fields,
+      type: { const: type },
+      title: str("标题"),
+      snippet: str("摘要，只用来判断读哪条；引用前用对应的 get_* 读全文"),
+    },
+    required: [...PUBLIC_REQUIRED.filter((key) => key !== "contributors"), "title", "snippet"],
+  };
+};
 
 export const page = (item: JsonSchema): JsonSchema => ({
   type: "object",

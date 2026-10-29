@@ -85,8 +85,22 @@ test("不合契约的返回会被拒绝", () => {
     ["成功和错误混在一起", { ...answer, error: { code: "not_found", message: "x" } }],
     ["未知错误码", { error: { code: "teapot", message: "x" } }],
     ["缺规范地址", { ...answer, answer: { ...answer.answer, url: undefined } }],
+    ["全文缺 contributors", { ...answer, answer: { ...answer.answer, contributors: undefined } }],
   ];
   for (const [label, value] of cases) assert.ok(!output(JSON.parse(JSON.stringify(value))), label);
+});
+
+test("摘要不带 contributors，全文才带（docs/mcp.md「决定：摘要不带 contributors」）", () => {
+  const search = success.search as { groups: { answer: { items: Record<string, unknown>[] } } };
+  assert.ok(!("contributors" in (search.groups.answer.items[0] ?? {})));
+  assert.ok(validator("search").output(search));
+  for (const tool of TOOLS) {
+    const text = JSON.stringify(tool.outputSchema);
+    // 每个摘要对象（带 snippet 的）都不把 contributors 列为必填。
+    for (const match of text.matchAll(/"required":\[([^\]]*"snippet"[^\]]*)\]/g)) {
+      assert.ok(!match[1]?.includes('"contributors"'), tool.name);
+    }
+  }
 });
 
 test("安全样例：至少 10 条、至少 1 条走 my_questions、每条都有效", () => {
