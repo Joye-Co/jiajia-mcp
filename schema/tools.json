@@ -72,13 +72,6 @@
                               "type": "string",
                               "description": "答案按最后更新时间；讨论按回答时间；面经按发布时间；报告按报告日期"
                             },
-                            "contributors": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              },
-                              "description": "发言人显示名：「群友 X」或本人开启的署名"
-                            },
                             "license": {
                               "const": "CC BY-NC 4.0"
                             },
@@ -99,7 +92,6 @@
                             "type",
                             "url",
                             "updatedAt",
-                            "contributors",
                             "license",
                             "title",
                             "snippet"
@@ -140,13 +132,6 @@
                               "type": "string",
                               "description": "答案按最后更新时间；讨论按回答时间；面经按发布时间；报告按报告日期"
                             },
-                            "contributors": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              },
-                              "description": "发言人显示名：「群友 X」或本人开启的署名"
-                            },
                             "license": {
                               "const": "CC BY-NC 4.0"
                             },
@@ -167,7 +152,6 @@
                             "type",
                             "url",
                             "updatedAt",
-                            "contributors",
                             "license",
                             "title",
                             "snippet"
@@ -208,13 +192,6 @@
                               "type": "string",
                               "description": "答案按最后更新时间；讨论按回答时间；面经按发布时间；报告按报告日期"
                             },
-                            "contributors": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              },
-                              "description": "发言人显示名：「群友 X」或本人开启的署名"
-                            },
                             "license": {
                               "const": "CC BY-NC 4.0"
                             },
@@ -235,7 +212,6 @@
                             "type",
                             "url",
                             "updatedAt",
-                            "contributors",
                             "license",
                             "title",
                             "snippet"
@@ -466,13 +442,6 @@
                           "type": "string",
                           "description": "答案按最后更新时间；讨论按回答时间；面经按发布时间；报告按报告日期"
                         },
-                        "contributors": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "description": "发言人显示名：「群友 X」或本人开启的署名"
-                        },
                         "license": {
                           "const": "CC BY-NC 4.0"
                         },
@@ -493,7 +462,6 @@
                         "type",
                         "url",
                         "updatedAt",
-                        "contributors",
                         "license",
                         "title",
                         "snippet"
@@ -1166,13 +1134,6 @@
                               "type": "string",
                               "description": "答案按最后更新时间；讨论按回答时间；面经按发布时间；报告按报告日期"
                             },
-                            "contributors": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              },
-                              "description": "发言人显示名：「群友 X」或本人开启的署名"
-                            },
                             "license": {
                               "const": "CC BY-NC 4.0"
                             },
@@ -1193,7 +1154,6 @@
                             "type",
                             "url",
                             "updatedAt",
-                            "contributors",
                             "license",
                             "title",
                             "snippet"
@@ -1234,13 +1194,6 @@
                               "type": "string",
                               "description": "答案按最后更新时间；讨论按回答时间；面经按发布时间；报告按报告日期"
                             },
-                            "contributors": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              },
-                              "description": "发言人显示名：「群友 X」或本人开启的署名"
-                            },
                             "license": {
                               "const": "CC BY-NC 4.0"
                             },
@@ -1261,7 +1214,6 @@
                             "type",
                             "url",
                             "updatedAt",
-                            "contributors",
                             "license",
                             "title",
                             "snippet"
@@ -1302,13 +1254,6 @@
                               "type": "string",
                               "description": "答案按最后更新时间；讨论按回答时间；面经按发布时间；报告按报告日期"
                             },
-                            "contributors": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              },
-                              "description": "发言人显示名：「群友 X」或本人开启的署名"
-                            },
                             "license": {
                               "const": "CC BY-NC 4.0"
                             },
@@ -1329,7 +1274,6 @@
                             "type",
                             "url",
                             "updatedAt",
-                            "contributors",
                             "license",
                             "title",
                             "snippet"
@@ -1608,13 +1552,6 @@
                                 "type": "string",
                                 "description": "答案按最后更新时间；讨论按回答时间；面经按发布时间；报告按报告日期"
                               },
-                              "contributors": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "发言人显示名：「群友 X」或本人开启的署名"
-                              },
                               "license": {
                                 "const": "CC BY-NC 4.0"
                               },
@@ -1635,7 +1572,6 @@
                               "type",
                               "url",
                               "updatedAt",
-                              "contributors",
                               "license",
                               "title",
                               "snippet"
@@ -1667,13 +1603,6 @@
                           "type": "string",
                           "description": "答案按最后更新时间；讨论按回答时间；面经按发布时间；报告按报告日期"
                         },
-                        "contributors": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "description": "发言人显示名：「群友 X」或本人开启的署名"
-                        },
                         "license": {
                           "const": "CC BY-NC 4.0"
                         },
@@ -1694,7 +1623,6 @@
                         "type",
                         "url",
                         "updatedAt",
-                        "contributors",
                         "license",
                         "title",
                         "snippet"
