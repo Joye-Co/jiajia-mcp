@@ -125,7 +125,8 @@ bearer_token_env_var = "JIAJIA_MCP_KEY"
 | `JIAJIA_MCP_URL` | 可选。默认 `https://jiajia.fun/mcp`，一般不用改。带 key 时只接受 https 地址 |
 
 - 转发程序只转发消息，不改写内容，也不在新旧两代 MCP 协议之间转换。客户端用的协议版本，服务端得支持。
-- 服务端返回 HTTP 错误（比如没设置 key 或 key 无效时的 401）时，转发程序把它变成一条 JSON-RPC 错误交给客户端，同时在 stderr 打一行说明。
+- 服务端返回 HTTP 错误时：带 JSON-RPC 错误正文的（比如没设置 key 或 key 无效时的 401）原样交给客户端，其他的转发程序变成一条 JSON-RPC 错误交给客户端。401 和非 JSON-RPC 的错误都会在 stderr 打一行说明。
+- 没设置 `JIAJIA_MCP_KEY` 时转发程序照样启动，并在 stderr 提醒一次。
 - 日志和错误信息里不会出现 key。
 
 ## 使用建议

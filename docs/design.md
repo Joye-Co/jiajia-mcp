@@ -52,7 +52,7 @@
 - **stdout 只写 JSON-RPC 消息**，日志和错误一律走 stderr。客户端把 stdout 当协议流读，混进一行日志就会断开。
 - **透明转发。** 每条消息单独 POST 到端点，只按规范补请求头（`MCP-Protocol-Version`、`Mcp-Method`、`Mcp-Name`），不理解、不改写消息内容，也不在新旧两代协议之间转换。
 - **每个请求只发一次，不自动重试。** 服务端每次受理 `tools/call` 都计额度，重试会悄悄花掉用户的额度；要不要重试由对方 agent 按 `code` 决定。
-- **HTTP 错误变成带原 id 的 JSON-RPC 错误**（-32000，`data.httpStatus`），同时在 stderr 打一行说明；服务端给出的 JSON-RPC 错误原样转交。401 原样交给客户端，理由见 mcp.md「决定：凭证无效时返回 401，不退回免登录的范围」。
+- **HTTP 错误变成带原 id 的 JSON-RPC 错误**（-32000，`data.httpStatus`），同时在 stderr 打一行说明；服务端给出的 JSON-RPC 错误原样转交。401 原样交给客户端，另在 stderr 说明怎么设置 `JIAJIA_MCP_KEY`，理由见 mcp.md「决定：凭证无效时返回 401，不退回免登录的范围」。没有 key 时照样启动，在 stderr 提醒一次。
 - **不保存会话。** 不发送也不记住 `Mcp-Session-Id`，服务端是无状态的。
 - **key 只从环境变量 `JIAJIA_MCP_KEY` 读**，不收命令行参数：命令行参数会出现在进程列表和 shell 历史里。带 key 时端点必须是 https（本机调试除外）。key 不出现在 stdout、stderr 和错误信息里。
 - **一行一条消息。** 批量请求和解析不了的行在本地就返回 JSON-RPC 错误，不发到服务端。

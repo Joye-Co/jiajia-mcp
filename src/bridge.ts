@@ -143,6 +143,8 @@ export function createBridge(options: BridgeOptions): Bridge {
     }
     if (isObject(body) && isObject(body.error)) {
       // 服务端给出的 JSON-RPC 错误原样交给客户端；不带 id 的补上请求的 id，客户端才能对上。
+      // 401（没登录或 key 不能用）另在 stderr 说明怎么设置 key：客户端常常只显示错误码，用户看不到正文。
+      if (response.status === 401) options.log(httpErrorMessage(401));
       if (id === undefined) {
         options.log(`通知被拒绝（HTTP ${response.status}）：${String(body.error.message ?? "")}`);
         return;
