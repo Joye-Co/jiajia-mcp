@@ -38,7 +38,7 @@ export const DATE: JsonSchema = {
 
 const NEXT_CURSOR: JsonSchema = { type: ["string", "null"], description: "还有后页时为非空字符串，读完为 null" };
 
-// 每条公开内容结果都有的字段（docs/mcp.md「每条公开内容结果都有的字段」）。
+// 公开内容结果的公共字段（docs/mcp.md「公开内容结果的公共字段」）。
 const PUBLIC_FIELDS = {
   id: { type: "string", minLength: 1 },
   url: { type: "string", format: "uri", description: "网站上的规范地址，引用时用它" },
@@ -60,7 +60,7 @@ export function publicObject(
   };
 }
 
-// 摘要不带 contributors：网站只在读单条全文时才给出贡献者，给每条摘要补查一次违反「搜索不逐条补查」
+// 摘要不带 contributors：网站只在读单条全文时才给出贡献者，给每条摘要补查一次代价太大
 // （docs/mcp.md「决定：摘要不带 contributors」）。
 export const SUMMARY = (type: string): JsonSchema => {
   const { contributors: _, ...fields } = PUBLIC_FIELDS;

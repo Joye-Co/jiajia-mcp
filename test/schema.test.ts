@@ -94,13 +94,21 @@ test("摘要不带 contributors，全文才带（docs/mcp.md「决定：摘要�
   const search = success.search as { groups: { answer: { items: Record<string, unknown>[] } } };
   assert.ok(!("contributors" in (search.groups.answer.items[0] ?? {})));
   assert.ok(validator("search").output(search));
-  for (const tool of TOOLS) {
-    const text = JSON.stringify(tool.outputSchema);
-    // 每个摘要对象（带 snippet 的）都不把 contributors 列为必填。
-    for (const match of text.matchAll(/"required":\[([^\]]*"snippet"[^\]]*)\]/g)) {
-      assert.ok(!match[1]?.includes('"contributors"'), tool.name);
+  // 遍历 schema 对象，找出所有摘要（required 里有 snippet 的节点），它们都不能要求 contributors。
+  const summaries: { tool: string; required: unknown[] }[] = [];
+  const walk = (tool: string, node: unknown): void => {
+    if (Array.isArray(node)) {
+      for (const child of node) walk(tool, child);
+      return;
     }
-  }
+    if (!node || typeof node !== "object") return;
+    const required = (node as { required?: unknown }).required;
+    if (Array.isArray(required) && required.includes("snippet")) summaries.push({ tool, required });
+    for (const child of Object.values(node)) walk(tool, child);
+  };
+  for (const tool of TOOLS) walk(tool.name, tool.outputSchema);
+  assert.ok(summaries.length > 0, "没有找到任何摘要对象，测试测不到东西");
+  for (const { tool, required } of summaries) assert.ok(!required.includes("contributors"), tool);
 });
 
 test("安全样例：至少 10 条、至少 1 条走 my_questions、每条都有效", () => {
