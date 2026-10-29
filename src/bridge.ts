@@ -183,7 +183,7 @@ export function createBridge(options: BridgeOptions): Bridge {
 function httpErrorMessage(status: number): string {
   switch (status) {
     case 401:
-      return "key 无效、已吊销，或账号已停用（HTTP 401）。请更换 JIAJIA_MCP_KEY，或删掉它改用匿名访问";
+      return "需要登录（HTTP 401）：没有设置 JIAJIA_MCP_KEY，或 key 无效、已吊销、账号已停用。请在 jiajia.fun 登录后到「账号设置」生成 key，设置到 JIAJIA_MCP_KEY";
     case 403:
       return "请求被服务端拒绝（HTTP 403）";
     case 404:

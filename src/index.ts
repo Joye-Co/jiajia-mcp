@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 
 export { CONTENT_NOTICE } from "./contract/parts.ts";
 export { PROMPTS } from "./contract/prompts.ts";
-export { MEMBER_ONLY_TOOLS, TOOLS } from "./contract/tools.ts";
+export { TOOLS } from "./contract/tools.ts";
 export type { ErrorCode, JsonSchema, PromptDefinition, ToolDefinition } from "./contract/types.ts";
 export { ERROR_CODES } from "./contract/types.ts";
 

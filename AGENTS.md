@@ -4,7 +4,7 @@
 
 ## 这个仓库是什么
 
-夹夹把 QQ 群里审核、脱敏后的公开内容（答案、原始讨论、面经、日报周报、话题）通过只读 MCP 提供给用户自己的 agent。服务端在 `https://jiajia.fun/mcp`，**不在本仓库**。本仓库放的是：
+夹夹把 QQ 群里审核、脱敏后的公开内容（答案、原始讨论、面经、日报周报、话题）通过 MCP 提供给用户自己的 agent（要登录，除 `ask` 外只读）。服务端在 `https://jiajia.fun/mcp`，**不在本仓库**。本仓库放的是：
 
 1. **工具定义**：对外契约，随 npm 包 `jiajia-mcp` 发布，服务端依赖它。
 2. **本地 stdio 转发**：给只支持 stdio 的客户端用。
@@ -20,7 +20,7 @@
 
 | 路径 | 负责什么 | 改了以后 |
 | --- | --- | --- |
-| `src/contract/` | 9 个工具和 2 个 prompt 的定义，共用片段在 `parts.ts` | 先改 docs/mcp.md；运行 `npm run schema:build`，提交生成的 `schema/tools.json`、`schema/prompts.json`；补 `test/fixtures/results.json` |
+| `src/contract/` | 10 个工具和 2 个 prompt 的定义，共用片段在 `parts.ts` | 先改 docs/mcp.md；运行 `npm run schema:build`，提交生成的 `schema/tools.json`、`schema/prompts.json`；补 `test/fixtures/results.json` |
 | `src/index.ts` | 包的公开入口：工具定义、兼容清单、安全样例 | 导出变了算包的接口变更，写进 PR 的「契约影响」 |
 | `src/bridge.ts`、`src/cli.ts` | 本地 stdio 转发 | 守住 docs/design.md「转发程序的不变量」；在 `test/bridge.test.ts` 或 `test/cli.test.ts` 补用例 |
 | `schema/tools.json`、`schema/prompts.json` | 生成文件，不手改 | 由 `npm run schema:build` 写出 |

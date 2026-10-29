@@ -4,9 +4,9 @@
 export type JsonSchema = { readonly [key: string]: unknown };
 
 export type ToolAnnotations = {
-  readonly readOnlyHint: true;
+  readonly readOnlyHint: boolean;
   readonly destructiveHint: false;
-  readonly idempotentHint: true;
+  readonly idempotentHint: boolean;
   readonly openWorldHint: false;
 };
 

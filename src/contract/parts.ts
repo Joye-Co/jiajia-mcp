@@ -1,10 +1,17 @@
 // 各工具共用的 schema 片段。字段语义见 docs/mcp.md「对象」和「错误」。
 import { ERROR_CODES, type JsonSchema, type ToolAnnotations } from "./types.ts";
 
-export const ANNOTATIONS: ToolAnnotations = {
+// 8 个读取工具和 my_questions 只读；ask 每次生成新回答、占一次网页提问次数并留下对话记录（docs/mcp.md「工具」）。
+export const READ_ONLY: ToolAnnotations = {
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
+  openWorldHint: false,
+};
+export const ASK_ANNOTATIONS: ToolAnnotations = {
+  readOnlyHint: false,
+  destructiveHint: false,
+  idempotentHint: false,
   openWorldHint: false,
 };
 
@@ -36,7 +43,11 @@ export const DATE: JsonSchema = {
   description: "YYYY-MM-DD，必须是真实存在的日期，按网站的报告时区（默认 Asia/Shanghai）解释，范围包含当天",
 };
 
-const NEXT_CURSOR: JsonSchema = { type: ["string", "null"], description: "还有后页时为非空字符串，读完为 null" };
+// 可空字段写成 anyOf 的两支，每支一个 type：只认单个 type 的客户端（比如 Gemini 的函数声明）不接受 type 数组。
+export const NEXT_CURSOR: JsonSchema = {
+  anyOf: [{ type: "string" }, { type: "null" }],
+  description: "还有后页时为非空字符串，读完为 null",
+};
 
 // 公开内容结果的公共字段（docs/mcp.md「公开内容结果的公共字段」）。
 const PUBLIC_FIELDS = {
@@ -88,7 +99,6 @@ export const ERROR: JsonSchema = {
     code: { enum: [...ERROR_CODES] },
     message: str("可读说明，对方 agent 据此决定下一步"),
     retryAfterSeconds: { type: "integer", minimum: 1, description: "rate_limited 时至少要等的秒数" },
-    keyUrl: { type: "string", format: "uri", description: "匿名层 rate_limited 时附上的生成 key 入口" },
   },
   required: ["code", "message"],
 };
@@ -103,7 +113,8 @@ export function result(success: Record<string, JsonSchema>, required: readonly s
         // 只约束是非空字符串，不写成 const：提示语改字不该算不兼容变更。固定文案是 CONTENT_NOTICE，由服务端和测试使用。
         properties: { contentNotice: { type: "string", minLength: 1, description: CONTENT_NOTICE }, ...success },
         required: ["contentNotice", ...required],
-        not: { properties: { error: true }, required: ["error"] },
+        // 用 {} 不用 true：两者都接受任何值，但有的客户端只认对象形式的子 schema。
+        not: { properties: { error: {} }, required: ["error"] },
       },
       { properties: { error: ERROR }, required: ["error"], additionalProperties: false },
     ],
