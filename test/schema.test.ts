@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { Ajv2020 } from "ajv/dist/2020.js";
-import { CONTENT_NOTICE, ERROR_CODES, MEMBER_ONLY_TOOLS, PROMPTS, SAFETY_CASES, TOOLS } from "../src/index.ts";
+import { CONTENT_NOTICE, ERROR_CODES, PROMPTS, SAFETY_CASES, TOOLS } from "../src/index.ts";
 import fixtures from "./fixtures/results.json" with { type: "json" };
 
 // strict 拦下拼错的关键字和 required 里拼错的字段名；format 只声明语义，校验交给服务端。
@@ -16,25 +16,51 @@ const validator = (name: string) => {
   return found;
 };
 
-test("工具名唯一、是 snake_case，群友专用工具都存在", () => {
+test("工具名唯一、是 snake_case，登录账号都有 my_questions 和 ask", () => {
   const names = TOOLS.map((t) => t.name);
   assert.equal(new Set(names).size, names.length);
   for (const name of names) assert.match(name, /^[a-z][a-z_]*$/);
-  for (const name of MEMBER_ONLY_TOOLS) assert.ok(names.includes(name), name);
+  for (const name of ["my_questions", "ask"]) assert.ok(names.includes(name), name);
   assert.deepEqual(
     PROMPTS.map((p) => p.name),
     ["daily_digest", "deep_dive"],
   );
 });
 
-test("所有工具都标成只读、幂等、非破坏、不访问外部世界", () => {
+test("除 ask 外都标成只读、幂等；所有工具都非破坏、不访问外部世界（docs/mcp.md「工具」）", () => {
   for (const tool of TOOLS) {
+    const readOnly = tool.name !== "ask";
     assert.deepEqual(
       tool.annotations,
-      { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+      { readOnlyHint: readOnly, destructiveHint: false, idempotentHint: readOnly, openWorldHint: false },
       tool.name,
     );
   }
+});
+
+test("schema 只用可移植的写法：type 不写成数组，子 schema 不写成 true / false", () => {
+  // 只认单个 type 的客户端（比如 Gemini 的函数声明）会拒绝 type 数组；有的客户端只认对象形式的子 schema。
+  const problems: string[] = [];
+  const walk = (where: string, node: unknown): void => {
+    if (typeof node === "boolean") problems.push(`${where} 是 ${node}`);
+    if (!node || typeof node !== "object") return;
+    if (Array.isArray(node)) {
+      for (const [i, child] of node.entries()) walk(`${where}[${i}]`, child);
+      return;
+    }
+    if (Array.isArray((node as { type?: unknown }).type)) problems.push(`${where}.type 是数组`);
+    for (const [key, child] of Object.entries(node)) {
+      // properties、$defs 下面是名字到子 schema 的映射；其余值是布尔的关键字（比如 additionalProperties: false）是合法的约束。
+      if (key === "properties" || key === "$defs") {
+        for (const [name, sub] of Object.entries(child as object)) walk(`${where}.${key}.${name}`, sub);
+      } else if (typeof child === "object") walk(`${where}.${key}`, child);
+    }
+  };
+  for (const tool of TOOLS) {
+    walk(`${tool.name}.inputSchema`, tool.inputSchema);
+    walk(`${tool.name}.outputSchema`, tool.outputSchema);
+  }
+  assert.deepEqual(problems, []);
 });
 
 test("inputSchema 顶层是对象、拒绝未知参数、不用组合关键字", () => {

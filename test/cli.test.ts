@@ -39,6 +39,24 @@ test("从环境变量读端点和 key，stdin 关闭后处理完再退出", asyn
   assert.deepEqual(JSON.parse(result.stdout), { jsonrpc: "2.0", id: 1, result: { method: "server/discover" } });
   assert.equal(server.received[0]?.headers.authorization, "Bearer jj_test_placeholder");
   assert.match(server.received[0]?.headers["user-agent"] ?? "", /^jiajia-mcp\/\d+\.\d+\.\d+$/);
+  assert.equal(result.stderr, "", "设置了 key 时不提醒");
+});
+
+test("没有 key 照样启动，在 stderr 提醒一次", async (t) => {
+  const server = await startFakeServer(echo);
+  t.after(server.close);
+
+  const result = await runCli(
+    { JIAJIA_MCP_URL: server.url },
+    `${JSON.stringify({ jsonrpc: "2.0", id: 1, method: "server/discover" })}\n`,
+  );
+
+  assert.equal(result.code, 0);
+  assert.deepEqual(JSON.parse(result.stdout), { jsonrpc: "2.0", id: 1, result: { method: "server/discover" } });
+  assert.equal(server.received[0]?.headers.authorization, undefined);
+  const lines = result.stderr.trim().split("\n");
+  assert.equal(lines.length, 1, result.stderr);
+  assert.match(lines[0] ?? "", /没有设置 JIAJIA_MCP_KEY/);
 });
 
 test("带 key 时拒绝非 https 的远程地址", async () => {

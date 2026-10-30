@@ -7,7 +7,7 @@ labels: ["enhancement"]
 
 <!--
 填写前阅读 [贡献指南](../../CONTRIBUTING.md)。仓库会公开，不贴真实内容。
-夹夹 MCP 只读、不调用模型、不做批量导出，这些边界见 docs/mcp.md「边界」。
+夹夹 MCP 要登录，除 `ask` 外只读，不做批量导出，这些边界见 docs/mcp.md「边界」。
 只是改进文档（README、docs/ 下的文档）时，把标签换成 documentation，「契约影响」写「无」。
 -->
 

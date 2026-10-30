@@ -170,6 +170,24 @@ describe("带 key", () => {
 });
 
 describe("错误透传", () => {
+  test("服务端带 JSON-RPC 正文的 401 原样交给客户端，并在日志里说明怎么设置 key", async (t) => {
+    const denied = {
+      jsonrpc: "2.0",
+      id: null,
+      error: { code: -32001, message: "需要登录", data: { keyUrl: "https://jiajia.fun/login" } },
+    };
+    const server = await startFakeServer((_request, response) => replyJson(response, 401, denied));
+    t.after(server.close);
+    const { lines, logs, send } = harness(server.url, KEY);
+
+    await send({ jsonrpc: "2.0", id: 3, method: "tools/list", params: { _meta: MODERN_META } });
+
+    assert.deepEqual(lines, [{ ...denied, id: 3 }]);
+    assert.equal(logs.length, 1);
+    assert.match(logs[0] ?? "", /HTTP 401.*JIAJIA_MCP_KEY/);
+    assert.ok(!JSON.stringify([lines, logs]).includes(KEY));
+  });
+
   test("服务端返回的 JSON-RPC 错误原样交给客户端", async (t) => {
     const mismatch = { jsonrpc: "2.0", id: 1, error: { code: -32020, message: "Header mismatch" } };
     const server = await startFakeServer((_request, response) => replyJson(response, 400, mismatch));

@@ -143,6 +143,8 @@ export function createBridge(options: BridgeOptions): Bridge {
     }
     if (isObject(body) && isObject(body.error)) {
       // 服务端给出的 JSON-RPC 错误原样交给客户端；不带 id 的补上请求的 id，客户端才能对上。
+      // 401（没登录或 key 不能用）另在 stderr 说明怎么设置 key：客户端常常只显示错误码，用户看不到正文。
+      if (response.status === 401) options.log(httpErrorMessage(401));
       if (id === undefined) {
         options.log(`通知被拒绝（HTTP ${response.status}）：${String(body.error.message ?? "")}`);
         return;
@@ -183,7 +185,7 @@ export function createBridge(options: BridgeOptions): Bridge {
 function httpErrorMessage(status: number): string {
   switch (status) {
     case 401:
-      return "key 无效、已吊销，或账号已停用（HTTP 401）。请更换 JIAJIA_MCP_KEY，或删掉它改用匿名访问";
+      return "需要登录（HTTP 401）：没有设置 JIAJIA_MCP_KEY，或 key 无效、已吊销、账号已停用。请在 jiajia.fun 登录后到「账号设置」生成 key，设置到 JIAJIA_MCP_KEY";
     case 403:
       return "请求被服务端拒绝（HTTP 403）";
     case 404:

@@ -2,10 +2,10 @@
 // --check 只比对、不写，生成文件过期时失败（CI 的 schema job）。
 // 生成文件要提交：评审时能看到契约的 diff，check:compat 也靠它取到上一个版本。
 import fs from "node:fs";
-import { MEMBER_ONLY_TOOLS, PROMPTS, TOOLS } from "../src/index.ts";
+import { PROMPTS, TOOLS } from "../src/index.ts";
 
 const outputs: Record<string, unknown> = {
-  "schema/tools.json": { tools: TOOLS, memberOnly: MEMBER_ONLY_TOOLS },
+  "schema/tools.json": { tools: TOOLS },
   "schema/prompts.json": { prompts: PROMPTS },
 };
 

@@ -52,7 +52,7 @@
 - **stdout 只写 JSON-RPC 消息**，日志和错误一律走 stderr。客户端把 stdout 当协议流读，混进一行日志就会断开。
 - **透明转发。** 每条消息单独 POST 到端点，只按规范补请求头（`MCP-Protocol-Version`、`Mcp-Method`、`Mcp-Name`），不理解、不改写消息内容，也不在新旧两代协议之间转换。
 - **每个请求只发一次，不自动重试。** 服务端每次受理 `tools/call` 都计额度，重试会悄悄花掉用户的额度；要不要重试由对方 agent 按 `code` 决定。
-- **HTTP 错误变成带原 id 的 JSON-RPC 错误**（-32000，`data.httpStatus`），同时在 stderr 打一行说明；服务端给出的 JSON-RPC 错误原样转交。401 不去掉 key 改走匿名层，理由见 mcp.md「决定：key 无效时返回 401，不退回匿名层」。
+- **HTTP 错误变成带原 id 的 JSON-RPC 错误**（-32000，`data.httpStatus`），同时在 stderr 打一行说明；服务端给出的 JSON-RPC 错误原样转交。401 原样交给客户端，另在 stderr 说明怎么设置 `JIAJIA_MCP_KEY`，理由见 mcp.md「决定：凭证无效时返回 401，不退回免登录的范围」。没有 key 时照样启动，在 stderr 提醒一次。
 - **不保存会话。** 不发送也不记住 `Mcp-Session-Id`，服务端是无状态的。
 - **key 只从环境变量 `JIAJIA_MCP_KEY` 读**，不收命令行参数：命令行参数会出现在进程列表和 shell 历史里。带 key 时端点必须是 https（本机调试除外）。key 不出现在 stdout、stderr 和错误信息里。
 - **一行一条消息。** 批量请求和解析不了的行在本地就返回 JSON-RPC 错误，不发到服务端。
@@ -79,7 +79,7 @@
 
 - **日期和来源**：2026-10-28，#6。
 - **决定**：工具定义写在 `src/contract/*.ts`，共用的片段（公共字段、错误、续页）只写一次。`npm run schema:build` 生成 `schema/tools.json` 和 `schema/prompts.json`，生成文件提交进仓库，CI 检查它没有过期。
-- **理由**：9 个工具共用大量片段，手写 JSON 会把同一段复制 9 遍，改一处漏一处。提交生成文件，评审时能直接看到契约的 diff；`check:compat` 用 `git show <tag>:schema/tools.json` 取上一个版本，不用重新构建旧代码；服务端的 git 依赖不跑构建也能读到。不用 JSON Schema 的跨文件 `$ref`：MCP 客户端拿到的工具定义必须是自包含的。
+- **理由**：10 个工具共用大量片段，手写 JSON 会把同一段复制 10 遍，改一处漏一处。提交生成文件，评审时能直接看到契约的 diff；`check:compat` 用 `git show <tag>:schema/tools.json` 取上一个版本，不用重新构建旧代码；服务端的 git 依赖不跑构建也能读到。不用 JSON Schema 的跨文件 `$ref`：MCP 客户端拿到的工具定义必须是自包含的。
 - **放弃的方案**：手写 JSON：重复太多。只在构建时生成、不提交：评审看不到 schema 的变化，兼容检查要检出旧 tag 重新构建。
 - **重新评估**：工具数量大到生成文件难以评审时。
 

@@ -27,6 +27,10 @@ if (key && url.protocol !== "https:" && !local) {
   process.exit(1);
 }
 
+// 没有 key 照样启动：服务端会对每个请求返回 401。先在这里提醒一次，免得用户只看到客户端报错。
+if (!key)
+  log("没有设置 JIAJIA_MCP_KEY，服务端会返回 401。请在 jiajia.fun 登录后到「账号设置」生成 key，设置到 JIAJIA_MCP_KEY");
+
 const bridge = createBridge({
   endpoint,
   key,
