@@ -12,7 +12,9 @@ jobs:
   check:
     # Where jobs run comes from CI_RUNS_ON (same as qqbot).
     # Unset falls back to ubuntu-24.04; currently ["self-hosted","qqbot-ci"].
-    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '"ubuntu-24.04"') }}
+    # A pull request from a fork always runs on a GitHub-hosted runner: once the repository is public, anyone can open
+    # one, and its code must never run on the self-hosted machine (Joye-Co/qqbot#1535).
+    runs-on: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) && 'ubuntu-24.04' || fromJSON(vars.CI_RUNS_ON || '"ubuntu-24.04"') }}
     steps:
       - uses: actions/checkout@v4
         with:
