@@ -3,8 +3,8 @@
 // 先运行 npm run build。在 Node 20 上也要通过（用户侧 engines 是 >=20）。
 import assert from "node:assert/strict";
 import { execFileSync, spawn } from "node:child_process";
-import { createServer } from "node:http";
 import { mkdtempSync, readdirSync, rmSync } from "node:fs";
+import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -24,7 +24,9 @@ const server = createServer((req, res) => {
 });
 
 try {
-  execFileSync("npm", ["pack", "--ignore-scripts", "--pack-destination", work], { stdio: ["ignore", "ignore", "inherit"] });
+  execFileSync("npm", ["pack", "--ignore-scripts", "--pack-destination", work], {
+    stdio: ["ignore", "ignore", "inherit"],
+  });
   const tarball = readdirSync(work).find((name) => name.endsWith(".tgz"));
   assert.ok(tarball, "npm pack 没有生成 tarball");
 
