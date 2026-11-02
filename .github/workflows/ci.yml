@@ -41,3 +41,5 @@ jobs:
           node-version: 20
       - name: dist/ runs on Node 20
         run: npm run smoke:dist
+      - name: the packed tarball starts through npx on Node 20
+        run: npm run smoke:pack
