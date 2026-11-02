@@ -1,9 +1,13 @@
-// 发布到 npm 的包只能带 dist/、schema/、README、许可证和 package.json，必需的入口都要在。
+// 发布到 npm 的包只能带 dist/、schema/、README、两份许可证和 package.json，必需的入口和许可证都要在。
 // 先运行 npm run build。
 import { execFileSync } from "node:child_process";
 
 const ALLOWED = /^(?:package\.json|README\.md|LICENSE(?:-CONTENT)?|dist\/.+|schema\/.+\.json)$/;
 const REQUIRED = [
+  "package.json",
+  "README.md",
+  "LICENSE",
+  "LICENSE-CONTENT",
   "dist/index.js",
   "dist/index.d.ts",
   "dist/cli.js",

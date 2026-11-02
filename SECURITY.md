@@ -1,6 +1,6 @@
 # 安全问题报告
 
-请不要为安全问题开公开 Issue。仓库公开后，在本仓库的 Security 页面使用「Report a vulnerability」私下报告（GitHub 私密漏洞报告）。仓库公开之前，直接联系维护者。
+请不要为安全问题开公开 Issue。在本仓库的 Security 页面使用「Report a vulnerability」私下报告（GitHub 私密漏洞报告）。如果看不到这个入口，开一个不含任何细节、只写「需要私下报告安全问题」的 Issue，维护者会联系你。
 
 ## 哪些算安全问题
 

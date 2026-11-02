@@ -9,7 +9,20 @@
     "url": "git+https://github.com/Joye-Co/jiajia-mcp.git"
   },
   "homepage": "https://jiajia.fun",
+  "bugs": {
+    "url": "https://github.com/Joye-Co/jiajia-mcp/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "jiajia",
+    "stdio",
+    "agent"
+  ],
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
     "jiajia-mcp": "dist/cli.js"
   },
@@ -22,7 +35,8 @@
   },
   "files": [
     "dist",
-    "schema"
+    "schema",
+    "LICENSE-CONTENT"
   ],
   "engines": {
     "node": ">=20"
@@ -38,6 +52,7 @@
     "check:contract": "node scripts/check-contract.ts",
     "check:pack": "node scripts/check-pack.ts",
     "smoke:dist": "node scripts/smoke-dist.mjs",
+    "smoke:pack": "node scripts/smoke-pack.mjs",
     "validate:server-json": "node scripts/validate-server-json.mjs",
     "check:secrets": "node scripts/check-secrets.mjs",
     "prepack": "npm run build"
