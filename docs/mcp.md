@@ -327,13 +327,23 @@ MCP 的版本分两代，接入方式不同。下表是两代各自要遵守的�
 给只支持 OAuth 的客户端（Claude 网页版、ChatGPT 等）。按 MCP 的授权规范，用 OAuth 2.1：
 
 - **发现**：401 的 `WWW-Authenticate` 指向 `https://jiajia.fun/.well-known/oauth-protected-resource/mcp`（RFC 9728），其中的授权服务器就是网站本身，元数据在 `https://jiajia.fun/.well-known/oauth-authorization-server`（RFC 8414）。
-- **注册**：动态客户端注册，`POST https://jiajia.fun/oauth/register`（RFC 7591）。只接受公开客户端（`token_endpoint_auth_method: none`），不发客户端密钥；`redirect_uris` 1～5 个，必须是 https 或本机回环地址的 http。注册后一天内没有被授权的客户端会被清掉。
-- **授权**：`https://jiajia.fun/oauth/authorize`，只接受 `response_type=code` 和 PKCE `S256`；`scope` 只有 `mcp`；带 `resource` 时必须是 `https://jiajia.fun/mcp`；`redirect_uri` 必须和注册时的完全一致，不一致时显示错误页，不跳回客户端。用户在网站登录后看到客户端名称和回调主机，点「允许」才签发授权码。
+- **客户端身份**：两种方式都支持，都只接受公开客户端（不发、不收客户端密钥）。
+  - **Client ID Metadata Document**（[MCP 授权规范 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization)「Client ID Metadata Documents」、[draft-ietf-oauth-client-id-metadata-document-00](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00)，查询日期：2026-11-02）：授权服务器元数据里 `client_id_metadata_document_supported` 是 `true`。`client_id` 是一个 https 地址，服务端在授权时用 GET 读取它（不带凭证、不跟随重定向、5 秒超时、最大 5 KB），不用先注册。地址的要求：`https`、默认端口、有路径、不带用户信息、查询和片段（草案允许查询，这里不收，地址越简单越不容易出错）、主机是公网域名（不收 IP 地址、`localhost`、`.local`、`.internal` 和不带点的主机名）；地址要写成规范形式（主机小写、没有 `.`、`..` 路径段），和文档里的 `client_id` 逐字相同。文档必须是 JSON 对象，`client_id` 和地址逐字相同，`redirect_uris` 1～10 个，每个都是 https 或本机回环地址的 http；`token_endpoint_auth_method` 不写或写 `none`，带 `client_secret` 的文档不收。`client_name` 可选，授权页上标明是客户端自报的名称。文档读不到或不合要求时显示错误页，不跳回客户端。服务端会缓存读到的文档，最长一天后重新读取；读取失败不缓存。
+  - **动态客户端注册**：`POST https://jiajia.fun/oauth/register`（RFC 7591）。`token_endpoint_auth_method` 只能是 `none`；`redirect_uris` 1～5 个，必须是 https 或本机回环地址的 http。注册后一天内没有被授权的客户端会被清掉。
+- **授权**：`https://jiajia.fun/oauth/authorize`，只接受 `response_type=code` 和 PKCE `S256`；`scope` 只有 `mcp`，请求里的其他 scope（例如 `offline_access`）忽略，授予的始终是 `mcp`；带 `resource` 时必须是 `https://jiajia.fun/mcp`；`redirect_uri` 必须和注册时（或元数据文档里）的某一个完全一致，不一致时显示错误页，不跳回客户端。用户在网站登录后看到客户端名称和回调主机（元数据文档的客户端还会看到 `client_id` 的主机），点「允许」才签发授权码。令牌、刷新和吊销用同一个 `client_id`，规则和注册的客户端一样。
 - **令牌**：`POST https://jiajia.fun/oauth/token`。授权码 5 分钟内有效，只能用一次。访问令牌 1 小时有效，刷新令牌 30 天有效；每次刷新都换一个新的刷新令牌，旧的立刻作废。令牌以 `jjo_` 开头，放进 `Authorization: Bearer`。
 - **吊销**：用户在网页「已授权的应用」里删除授权，或客户端调用 `POST https://jiajia.fun/oauth/revoke`（RFC 7009），这次授权下的所有令牌立刻失效，下一次调用返回 401。
 - **不支持**：在浏览器里直接发请求的客户端（`/mcp` 和这些端点都不发 CORS 头）、客户端密钥、`plain` 方式的 PKCE。
 
 staging 的地址各自换成 staging 的主机名。
+
+### 决定：支持 Client ID Metadata Document，保留动态注册
+
+- **日期和来源**：2026-11-02，维护者（Joye-Co/qqbot#1582）。
+- **决定**：授权服务器同时支持 Client ID Metadata Document 和动态客户端注册。元数据文档只从公网 https 域名读取，不跟随重定向，限时、限大小，最长缓存一天。
+- **理由**：Claude 网页版添加自定义连接器时默认用「公开身份」，也就是 Client ID Metadata Document（Claude 帮助中心「Get started with custom connectors using remote MCP」，查询日期：2026-11-02）；只支持动态注册时，用默认选项会连不上。MCP 授权规范 2025-11-25 把它列为 SHOULD，动态注册降为 MAY。服务端按客户端给的地址发请求，所以只读公网域名、不跟随重定向，免得被用来访问内网或本机的地址（规范「Authorization Server Abuse Protection」）。
+- **放弃的方案**：只保留动态注册，在接入说明里提醒改选「自动注册」：很多人会直接用默认项。只接受名单里的域名：对公开服务没有必要，名单要随客户端变化维护。
+- **重新评估**：规范的这部分正式发布或有不兼容的修改时；有客户端的元数据文档超过 5 KB 或回调地址超过 10 个时。
 
 ### 额度
 
